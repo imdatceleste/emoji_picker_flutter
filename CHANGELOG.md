@@ -1,3 +1,41 @@
+## 4.3.0
+- Separate 'Cross-eye' and 'Spiral-eye' emojis (Thx to @echogit)
+- Add 'Heart on Fire' emoji (Thx to @Yotamho)
+
+## 4.2.0
+- Migrate to Swift Package Manager for MacOS
+
+## 4.1.0
+- Migrate to Swift Package Manager for iOS
+
+## 4.0.0
+- Add localization support for following languages: en, de, es, fr, hi it, ja, pt, ru, zh
+- Add script to generate language files for any language based on the official unucode organization translations
+- Improve search feature to match new emoji name pattern based on keywords
+- Update dependencies
+- Replace dart:io with universal_io to support wasm
+- Added filterUnsupported method to EmojiPickerUtils (thx to @maeddin)
+
+## 3.1.0
+- Added Emoji for Transgender Flag and Hugging People (thx to @everypizza1)
+- Replace `swapCategoryAndBottomBar` with `viewOrderConfig` to give more control over the order of each view (thx to coder-with-a-bushido)
+
+## 3.0.0
+- Upgrade to Flutter `3.24.0`, Dart `3.4.0` and dependencies e.g. `web: 1.0.0` (thx to @diegotori)
+- Allow custom icon for Backspace and Search button
+- Replace `showBackspaceButton` in `CategoryViewConfig` with `extraTab` to allow choosing between Backspace, Search or no extra button in category tab bar
+- Fix scroll issue on Linux
+- Remove `buttonColor` property in `SearchViewConfig` because it had no effect
+- Add `inputTextStyle` and `hintTextStyle` in `SearchViewConfig` for better customization
+- Fix issue with dark mode support in search view
+
+## 2.2.0
+
+- Downgrade Kotlin to 1.7.10
+- Migrate to DSL syntax for gradle setup
+- Migrate from from `dart:html` to `package:web` (thx @GleammerRay)
+- Minimum Flutter version `3.19.3`
+
 ## 2.1.1
 
 - Address issue with inconsistent JVM-target compatibility (thx @GleammerRay)

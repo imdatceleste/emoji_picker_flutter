@@ -191,11 +191,15 @@ class MyAppState extends State<MyApp> {
                         config: Config(
                           height: 256,
                           checkPlatformCompatibility: true,
+                          viewOrderConfig: const ViewOrderConfig(
+                            top: EmojiPickerItem.searchBar,
+                            middle: EmojiPickerItem.emojiView,
+                            bottom: EmojiPickerItem.categoryBar,
+                          ),
                           emojiTextStyle: _textStyle,
                           emojiViewConfig: const EmojiViewConfig(
                             backgroundColor: Colors.white,
                           ),
-                          swapCategoryAndBottomBar: true,
                           skinToneConfig: const SkinToneConfig(),
                           categoryViewConfig: CategoryViewConfig(
                             backgroundColor: Colors.white,
@@ -298,22 +302,29 @@ class WhatsAppCategoryViewState extends State<WhatsAppCategoryView>
               closeSkinToneOverlay,
             ),
           ),
-          _buildBackspaceButton(),
+          _buildExtraTab(widget.config.categoryViewConfig.extraTab),
         ],
       ),
     );
   }
 
-  Widget _buildBackspaceButton() {
-    if (widget.config.categoryViewConfig.showBackspaceButton) {
+  Widget _buildExtraTab(extraTab) {
+    if (extraTab == CategoryExtraTab.BACKSPACE) {
       return BackspaceButton(
         widget.config,
         widget.state.onBackspacePressed,
         widget.state.onBackspaceLongPressed,
         widget.config.categoryViewConfig.backspaceColor,
       );
+    } else if (extraTab == CategoryExtraTab.SEARCH) {
+      return SearchButton(
+        widget.config,
+        widget.state.onShowSearchView,
+        widget.config.categoryViewConfig.iconColor,
+      );
+    } else {
+      return const SizedBox.shrink();
     }
-    return const SizedBox.shrink();
   }
 }
 
@@ -424,10 +435,9 @@ class WhatsAppSearchViewState extends SearchViewState {
               children: [
                 IconButton(
                   onPressed: widget.showEmojiView,
-                  color: widget.config.searchViewConfig.buttonColor,
-                  icon: Icon(
+                  color: widget.config.searchViewConfig.buttonIconColor,
+                  icon: const Icon(
                     Icons.arrow_back,
-                    color: widget.config.searchViewConfig.buttonIconColor,
                     size: 20.0,
                   ),
                 ),

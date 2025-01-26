@@ -23,6 +23,7 @@ Yet another Emoji Picker for Flutter 🤩
 - Skin Tone Support
 - Custom-Font Support
 - Search Option
+- Localization (supporting 8 Languages)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/fintasys)
 
@@ -52,7 +53,11 @@ EmojiPicker(
             ?  1.20
             :  1.0),
         ),
-        swapCategoryAndBottomBar:  false,
+        viewOrderConfig: const ViewOrderConfig(
+            top: EmojiPickerItem.categoryBar,
+            middle: EmojiPickerItem.emojiView,
+            bottom: EmojiPickerItem.searchBar,
+        ),
         skinToneConfig: const SkinToneConfig(),
         categoryViewConfig: const CategoryViewConfig(),
         bottomActionBarConfig: const BottomActionBarConfig(),
@@ -70,7 +75,7 @@ All examples can be found [here](https://github.com/Fintasys/emoji_picker_flutte
 
    <img src="https://raw.githubusercontent.com/Fintasys/emoji_picker_flutter/41c3e6d2cfe69375e263f42cfe06dbad7936bde1/screenshot/example_default_android.png" width="300">
 
-2. Custom Font (Display all emoji correctly in the style of the font, additional ~15mb e.g. with Google Fonts)
+2. Custom Font (Display all emoji correctly in the style of the font, additional ~15mb e.g. with Google Fonts) - Might causes performance issues on iOS (see [issue 205](https://github.com/Fintasys/emoji_picker_flutter/issues/205))
 
    <img src="https://raw.githubusercontent.com/Fintasys/emoji_picker_flutter/version-2.0/screenshot/example_custom_font_android.png" width="300"> <img src="https://raw.githubusercontent.com/Fintasys/emoji_picker_flutter/version-2.0/screenshot/example_custom_font_android_2.png" width="300">
 
@@ -85,10 +90,12 @@ All examples can be found [here](https://github.com/Fintasys/emoji_picker_flutte
 | property                   | description                                                                                                                                     | default                       |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
 | height                     | Height of Emoji Picker                                                                                                                          | 256                           |
-| swapCategoryAndBottomBar   | Swap the category view and bottom bar (category bottom and bottom bar top)                                                                      | false                         |
+| viewOrderConfig   | The exact order in which category view, emoji view and bottom bar appear                                                                      | const ViewOrderConfig()                         |
 | checkPlatformCompatibility | Whether to filter out glyphs that platform cannot render with the default font (Android).                                                       | true                          |
 | emojiSet                   | Custom emoji set, can be built based on `defaultEmojiSet` provided by the library.                                                              | null                          |
 | emojiTextStyle             | Text style to apply to individual emoji icons. Can be used to define custom emoji font either with GoogleFonts library or bundled with the app. | null                          |
+| customBackspaceIcon             | Custom Icon for Backspace button | null                          |
+| customSearchIcon             | Custom Icon for Search button | null                          |
 | emojiViewConfig            | Emoji view config                                                                                                                               | const EmojiViewConfig()       |
 | skinToneConfig             | Skin tone config                                                                                                                                | const SkinToneConfig          |
 | categoryViewConfig         | Category view config                                                                                                                            | const CategoryViewConfig      |
@@ -127,7 +134,7 @@ All examples can be found [here](https://github.com/Fintasys/emoji_picker_flutte
 | tabIndicatorAnimDuration | Duration of tab indicator to animate to next category                                                      | Duration(milliseconds: 300) |
 | initCategory             | The initial Category that will be selected                                                                 | Category.RECENT             |
 | recentTabBehavior        | Show extra tab with recently / popular used emoji                                                          | RecentTabBehavior.RECENT    |
-| showBackspaceButton      | Show backspace button in category view                                                                     | false                       |
+| extraTab      | Add extra tab to category tab bar for backspace or search button                                                                    | CategoryExtraTab.NONE                       |
 | backgroundColor          | Background color of category tab bar                                                                       | const Color(0xFFEBEFF2)     |
 | indicatorColor           | The color of the category indicator                                                                        | Colors.blue                 |
 | iconColor                | The color of the category icons                                                                            | Colors.grey                 |
@@ -143,8 +150,9 @@ All examples can be found [here](https://github.com/Fintasys/emoji_picker_flutte
 | showBackspaceButton   | Show backspace button in bottom action bar   | true         |
 | showSearchViewButton  | Show search-view button in bottom action bar | true         |
 | backgroundColor       | Background color of bottom action bar        | Colors.blue  |
-| buttonColor           | Fill color of buttons in bottom action bar   | Colors.blue  |
 | buttonIconColor       | Icon color of buttons                        | Colors.white |
+| inputTextStyle        | Custom TextStyle of TextField for input text | null         |
+| hintTextStyle         | Custom TextStyle of TextField for hint       | null         |
 | customBottomActionBar | Customize the bottom action bar widget       | null         |
 
 ## Search View Config
@@ -159,7 +167,7 @@ All examples can be found [here](https://github.com/Fintasys/emoji_picker_flutte
 
 ## Backspace-Button
 
-Backspace button is enabled by default on the bottom action bar. If you prefer to have the backspace button inside the category, you can enable it inside the `CategoryViewConfig`.
+Backspace button is enabled by default on the bottom action bar. If you prefer to have the backspace button inside the category tab bar, you can enable it inside the `CategoryViewConfig` and then `extraTab` to `CategoryExtraTab.BACKSPACE`.
 You can listen to the Backspace tap event by registering a callback inside `onBackspacePressed: () { }`. This will make it easier for your user to remove an added Emoji without showing the keyboard. Check out the example for more details about usage.
 
 Bottom Backspace Button
@@ -219,6 +227,50 @@ Each component can also be completely customized individually:
 - `CategoryViewConfig` -> `customCategoryView`
 
 - `BottomActionBarConfig` -> `customBottomActionBar`
+
+## Localization
+The package currently supports following languages: en, de, es, fr, hi, it, ja, pt, ru, zh.
+In order to let the EmojiPicker choose the right language you need to pass the locale to the config:
+``` dart
+Config(
+    locale: const Locale("ja"),
+)    
+```
+In case you want to support additional languages, you need to create a copy of a emoji set file (see /lib/locales), translate it (optional use `/automation/create_emoji_set.sh` to help you) and adjust the config for `emojiSet`:
+```dart
+EmojiPicker(
+    config: Config(
+         emojiSet: _getEmojiLocale,
+    ),
+)
+
+List<CategoryEmoji> _getEmojiLocale(Locale locale) {
+  switch (locale.languageCode) {
+    case "ja":
+      return emojiSetJapanese;
+    case "de":
+      return emojiSetGerman;
+    default:
+      return emojiSetEnglish;
+  }
+}
+```
+Example for using `/automation/create_emoji_set.sh` for generating translation in terminal:
+1. Fork the repository and open the directory from your terminal
+2. Run command below 
+```
+cd automation && ./create_emoji_set.sh pt Portuguese
+```
+Feel free to create an issue if you think a specific language should be supported by default. We keep the languages limited for now to avoid the package size growing unnecesserily large.
+
+In case you want to support only a single language you can just return the same EmojiSet for all locales.
+```
+List<CategoryEmoji> _getEmojiLocale(String locale) {
+    return emojiSetEnglish;
+}
+```
+Using a single EmojiSet will reduce the package size by about 2 MB.
+If you prefer to use the old EmojiSet (version 3 and below), you can return `defaultEmojiSet`. 
 
 ## Extended usage with EmojiPickerUtils
 

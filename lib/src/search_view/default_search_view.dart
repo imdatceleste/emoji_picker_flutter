@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 /// Default Search implementation
 class DefaultSearchView extends SearchView {
   /// Constructor
-  const DefaultSearchView(
-    Config config,
-    EmojiViewState state,
-    VoidCallback showEmojiView,
-  ) : super(config, state, showEmojiView);
+  const DefaultSearchView(super.config, super.state, super.showEmojiView,
+      {super.key});
 
   @override
   DefaultSearchViewState createState() => DefaultSearchViewState();
@@ -30,6 +27,7 @@ class DefaultSearchViewState extends SearchViewState {
           mainAxisSize: MainAxisSize.min,
           children: [
             Material(
+              color: Colors.transparent,
               child: SizedBox(
                 height: emojiBoxSize + 8.0,
                 child: ListView.builder(
@@ -52,19 +50,20 @@ class DefaultSearchViewState extends SearchViewState {
                   onPressed: () {
                     widget.showEmojiView();
                   },
-                  color: widget.config.searchViewConfig.buttonColor,
-                  icon: Icon(
+                  color: widget.config.searchViewConfig.buttonIconColor,
+                  icon: const Icon(
                     Icons.arrow_back,
-                    color: widget.config.searchViewConfig.buttonIconColor,
                   ),
                 ),
                 Expanded(
                   child: TextField(
                     onChanged: onTextInputChanged,
                     focusNode: focusNode,
+                    style: widget.config.searchViewConfig.inputTextStyle,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: widget.config.searchViewConfig.hintText,
+                      hintStyle: widget.config.searchViewConfig.hintTextStyle,
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 16),
                     ),

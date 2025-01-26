@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 /// Default Bottom Action Bar implementation
 class DefaultBottomActionBar extends BottomActionBar {
   /// Constructor
-  DefaultBottomActionBar(
-      Config config, EmojiViewState state, VoidCallback showSearchView)
-      : super(config, state, showSearchView);
+  const DefaultBottomActionBar(super.config, super.state, super.showSearchView,
+      {super.key});
 
   @override
   State<StatefulWidget> createState() => _DefaultBottomActionBarState();
@@ -31,12 +30,10 @@ class _DefaultBottomActionBarState extends State<DefaultBottomActionBar> {
     if (widget.config.bottomActionBarConfig.showSearchViewButton) {
       return CircleAvatar(
         backgroundColor: widget.config.bottomActionBarConfig.buttonColor,
-        child: IconButton(
-          onPressed: widget.showSearchView,
-          icon: Icon(
-            Icons.search,
-            color: widget.config.bottomActionBarConfig.buttonIconColor,
-          ),
+        child: SearchButton(
+          widget.config,
+          widget.showSearchView,
+          widget.config.bottomActionBarConfig.buttonIconColor,
         ),
       );
     }

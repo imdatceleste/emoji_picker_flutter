@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 /// Default EmojiPicker Implementation
 class DefaultEmojiPickerView extends EmojiPickerView {
   /// Constructor
-  DefaultEmojiPickerView(
-    Config config,
-    EmojiViewState state,
-    VoidCallback showSearchBar,
-  ) : super(config, state, showSearchBar);
+  const DefaultEmojiPickerView(super.config, super.state, super.showSearchBar,
+      {super.key});
 
   @override
-  _DefaultEmojiPickerViewState createState() => _DefaultEmojiPickerViewState();
+  State<DefaultEmojiPickerView> createState() => _DefaultEmojiPickerViewState();
 }
 
 class _DefaultEmojiPickerViewState extends State<DefaultEmojiPickerView>
@@ -58,19 +55,24 @@ class _DefaultEmojiPickerViewState extends State<DefaultEmojiPickerView>
           buttonMode: widget.config.emojiViewConfig.buttonMode,
           child: Column(
             children: [
-              // Category view or bottom search bar
-              widget.config.swapCategoryAndBottomBar
-                  ? _buildBottomSearchBar()
-                  : _buildCategoryView(),
-
-              // Emoji view
-              _buildEmojiView(emojiSize, emojiBoxSize),
-
-              // Bottom Search Bar or Category view
-              widget.config.swapCategoryAndBottomBar
-                  ? _buildCategoryView()
-                  : _buildBottomSearchBar(),
-            ],
+              widget.config.viewOrderConfig.top,
+              widget.config.viewOrderConfig.middle,
+              widget.config.viewOrderConfig.bottom,
+            ].map(
+              (item) {
+                switch (item) {
+                  case EmojiPickerItem.categoryBar:
+                    // Category view
+                    return _buildCategoryView();
+                  case EmojiPickerItem.emojiView:
+                    // Emoji view
+                    return _buildEmojiView(emojiSize, emojiBoxSize);
+                  case EmojiPickerItem.searchBar:
+                    // Search Bar
+                    return _buildBottomSearchBar();
+                }
+              },
+            ).toList(),
           ),
         );
       },
